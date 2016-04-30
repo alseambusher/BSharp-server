@@ -2,12 +2,13 @@ from app import app
 from pymongo import MongoClient
 from datetime import datetime
 from flask import request
+from flask import render_template
 client = MongoClient()
 db = client.test
 @app.route('/')
 def index():
     db.songs.remove({})
-    return "Hello, World!"
+    return render_template('index.html')
 
 @app.route('/store', methods=['POST'])
 def publishSong():
