@@ -20,18 +20,19 @@ def cosine_sim(song1,song2):
 @app.route('/')
 def index():
     return render_template('index.html')
-
+ha
 @app.route('/store', methods=['POST'])
 def publishSong():
 	songList = list(db.songs.find({}, {"song": 1, "_id": 1}))
 	songs = map(lambda x: json.loads(str(x["song"])), songList)
-	print("SONGS"+str(songs))
+	
 	currSong = ast.literal_eval(request.data)
+	current = map(lambda x: x[1], currSong)    	
 	similarity_values = []
 	for song in songs:
-		song = ast.literal_eval(str(song))
-		minL = min(len(currSong),len(song))
-    		similarity_values.append(cosine_sim(currSong[0:minL],song[0:minL]))
+		song = map(lambda x: x[1] , ast.literal_eval(str(song)))
+		minL = min(len(current),len(song))
+		similarity_values.append(cosine_sim(current[0:minL],song[0:minL]))
 	sim = heapq.nlargest(3, range(len(songList)))
 	print(sim)
 	
