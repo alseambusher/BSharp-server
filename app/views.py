@@ -33,9 +33,8 @@ def publishSong():
 		song = map(lambda x: x[1] , ast.literal_eval(str(song)))
 		minL = min(len(current),len(song))
 		similarity_values.append(cosine_sim(current[0:minL],song[0:minL]))
-	sim = heapq.nlargest(3, range(len(songs)))
-	print(sim)
-	
+	sim = heapq.nlargest(5, range(len(songs)))
+	sim = [songs[i] for i in sim]
 	timestamp = request.args.get('timestamp')	
 	result = db.songs.insert_one({ "timestamp" : "$currentDate",
 					"song" : currSong,
@@ -55,4 +54,9 @@ def getSong(songname):
 def deleteAll():
 	db.songs.remove()
 	return "Deleted"
+
+@app.route('/recommend', methods=['POST'])
+def recommend():
+	song = ast.literal_eval(request.data)
+	return json.dumps([x for x in db.songs.find({"song": song}, {"song":1, "timestamp": 1, "_id":0})])
 
