@@ -1,13 +1,8 @@
 from flask import Flask
 from flask import request
+from flask.ext.cors import CORS
 
 app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return "Hello, World!"
-
-@app.route('/route1', methods=['POST'])
-def route1():
-	request.data
+CORS(app)
+from app import views
 
