@@ -73,8 +73,8 @@ def deleteAll():
 @app.route('/recommend', methods=['POST'])
 def recommend():
 	song = ast.literal_eval(request.data)
-	mySongs = list(db.songs.find({"song": song}, {"song":1, "timestamp": 1,"sim":1, "_id":0}))
-	recommendations = map(lambda x: json.loads(x["similar"]),mySongs)
-	return recommendations
+	mySongs = list(db.songs.find({"song": song}, {"song":1, "timestamp": 1,"similar":1, "_id":0}))
+#	recommendations = map(lambda x: json.loads(str(x["similar"])),mySongs)
+	return json.dumps([x for x in mySongs])
 	
 
