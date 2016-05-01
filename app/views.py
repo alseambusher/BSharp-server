@@ -20,7 +20,7 @@ def cosine_sim(song1,song2):
 @app.route('/')
 def index():
     return render_template('index.html')
-ha
+
 @app.route('/store', methods=['POST'])
 def publishSong():
 	songList = list(db.songs.find({}, {"song": 1, "_id": 1}))
