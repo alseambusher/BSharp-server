@@ -8,7 +8,8 @@ import numpy as np
 import heapq
 import json
 import ast
-
+from bson import json_util
+import time
 client = MongoClient()
 db = client.test
 
@@ -35,16 +36,12 @@ def publishSong():
 		similarity_values.append(cosine_sim(current[0:minL],song[0:minL]))
 	sim = heapq.nlargest(5, range(len(songs)))
 	sim = [songs[i] for i in sim]
-	timestamp = request.args.get('timestamp')	
-	result = db.songs.insert_one({ "timestamp" : "$currentDate",
-					"song" : currSong,
-					"similar": sim
-					})
+	result = db.songs.insert_one({"song": currSong,"similar": sim , "timestamp": time.time())
 	return "Done"
 	
 @app.route('/store', methods=['GET'])
 def getSongs():
-	return json.dumps([x for x in db.songs.find({}, {"song":1, "timestamp": 1, "_id":0})])
+	return json.dumps([x for x in db.songs.find({}, {"song":1,'timestamp': 1, "_id":0})], default=json_util.default)
 	
 @app.route('/store/<songname>', methods=['GET'])
 def getSong(songname):
@@ -58,5 +55,5 @@ def deleteAll():
 @app.route('/recommend', methods=['POST'])
 def recommend():
 	song = ast.literal_eval(request.data)
-	return json.dumps([x for x in db.songs.find({"song": song}, {"song":1, "timestamp": 1, "_id":0})])
+	return json.dumps([x for x in db.songs.find({"song": song}, {"song":1, "timestamp": 1, "_id":0})], default=json_util.default)
 
